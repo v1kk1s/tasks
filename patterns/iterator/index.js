@@ -17,21 +17,21 @@ class XKCDMeme {
     ];
   }
 
+  next (callback) {
+    if (!this.hasNext()) {
+      return false;
+    } 
+
+    let meme = this.data[this.index];
+    callback(meme);
+    this.index++;
+    return this;
+  }
+
   hasNext() {
     return this.index < this.data.length;
   }
 }
-
-XKCDMeme.prototype.next = function (callback) {
-  if (!this.hasNext()) {
-    return false;
-  } 
-
-  let meme = this.data[this.index];
-  callback(meme);
-  this.index++;
-  return this;
-};
 
 const xkcdMeme = new XKCDMeme();
 
