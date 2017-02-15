@@ -17,12 +17,12 @@ class XKCDMeme {
     ];
   }
 
-  next (callback) {
+  next(callback) {
     if (!this.hasNext()) {
       return false;
-    } 
+    }
 
-    let meme = this.data[this.index];
+    const meme = this.data[this.index];
     callback(meme);
     this.index++;
     return this;
