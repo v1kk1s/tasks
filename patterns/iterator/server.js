@@ -17,7 +17,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/xkcd', (req, res) => {
-  res.send({ name: `${req.query.id}.png` });
+  if (req.query.id === 0) {
+    setTimeout(() => {
+      res.send({ name: `${req.query.id}.png` });
+    }, 20000);
+  } else {
+    res.send({ name: `${req.query.id}.png` });
+  }
 });
 
 app.listen(port, () => {

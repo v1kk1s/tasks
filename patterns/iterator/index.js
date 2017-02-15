@@ -7,6 +7,8 @@ function addMemeToDOM(meme) {
 
 class XKCDMeme {
   constructor() {
+    this.pending = false;
+    this.callbackQueue = [];
     this.index = 0;
     this.data = [
       { name: '1.png' },
@@ -22,9 +24,14 @@ class XKCDMeme {
       return false;
     }
 
-    const meme = this.data[this.index];
-    callback(meme);
-    this.index++;
+    if (this.pending) {
+      this.callbackQueue.push(callback);
+    } else {
+      const meme = this.data[this.index];
+      callback(meme);
+      this.index++;
+    }
+
     return this;
   }
 
