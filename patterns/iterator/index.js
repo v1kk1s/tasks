@@ -9,14 +9,8 @@ class XKCDMeme {
   constructor() {
     this.pending = false;
     this.callbackQueue = [];
-    this.index = 0;
-    this.data = [
-      { name: '1.png' },
-      { name: '2.png' },
-      { name: '3.png' },
-      { name: '4.png' },
-      { name: '5.png' },
-    ];
+    this.index = 1;
+    this.dataLength = 5;
   }
 
   next(callback) {
@@ -24,19 +18,18 @@ class XKCDMeme {
       return false;
     }
 
-    if (this.pending) {
-      this.callbackQueue.push(callback);
-    } else {
-      const meme = this.data[this.index];
-      callback(meme);
-      this.index++;
-    }
+    fetch(`/xkcd?id=${this.index}`)
+      .then(resp => resp.json())
+      .then((data) => {
+        callback(data);
+      });
 
+    this.index++;
     return this;
   }
 
   hasNext() {
-    return this.index < this.data.length;
+    return this.index <= this.dataLength;
   }
 }
 

@@ -20,7 +20,7 @@ app.get('/xkcd', (req, res) => {
   if (req.query.id === 1) {
     setTimeout(() => {
       res.send({ name: `${req.query.id}.png` });
-    }, 2000);
+    }, 3000);
   } else {
     res.send({ name: `${req.query.id}.png` });
   }
