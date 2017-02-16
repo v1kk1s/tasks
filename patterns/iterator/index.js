@@ -18,18 +18,36 @@ class XKCDMeme {
       return false;
     }
 
-    fetch(`/xkcd?id=${this.index}`)
-      .then(resp => resp.json())
-      .then((data) => {
-        callback(data);
-      });
+    if (this.pending) {
+      this.callbackQueue.push(this.nextRunner(addMemeToDOM));
+    } else {
+      this.pending = true;
+      fetch(`/xkcd?id=${this.index}`)
+        .then(resp => resp.json())
+        .then((data) => {
+          callback(data);
+        })
+        .then(() => {
+          this.pending = false;
+          this.index++;
+          if (this.callbackQueue.length) {
+            this.callbackQueue[0].apply(this);
+            this.callbackQueue.shift();
+          }
+        });
+    }
 
-    this.index++;
     return this;
   }
 
   hasNext() {
     return this.index <= this.dataLength;
+  }
+
+  nextRunner(callback) {
+    return function () {
+      this.next(callback);
+    };
   }
 }
 

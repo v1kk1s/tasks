@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/xkcd', (req, res) => {
-  if (+req.query.id === 1) {
+  if (+req.query.id === 2) {
     setTimeout(() => {
       res.send({ name: `${req.query.id}.png` });
     }, 1000);
