@@ -1,5 +1,4 @@
 function addMemeToDOM(meme) {
-  console.log('callback', meme);
   const img = document.createElement('img');
   img.setAttribute('src', `/images/${meme.name}`);
   document.getElementById('app').appendChild(img);
