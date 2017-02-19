@@ -1,7 +1,7 @@
 function addMemeToDOM(meme) {
+  console.log('callback', meme);
   const img = document.createElement('img');
   img.setAttribute('src', `/images/${meme.name}`);
-
   document.getElementById('app').appendChild(img);
 }
 
@@ -19,42 +19,39 @@ class XKCDMeme {
     }
 
     if (this.pending) {
-      this.callbackQueue.push(this.nextRunner(addMemeToDOM));
+      this.callbackQueue.push(callback);
     } else {
       this.pending = true;
-      fetch(`/xkcd?id=${this.index}`)
-        .then(resp => resp.json())
-        .then((data) => {
-          callback(data);
-        })
-        .then(() => {
-          this.pending = false;
-          this.index++;
-          if (this.callbackQueue.length) {
-            this.callbackQueue[0].apply(this);
-            this.callbackQueue.shift();
-          }
-        });
+      this.getData(callback);
     }
 
     return this;
   }
 
-  hasNext() {
-    return this.index <= this.dataLength;
+  getData (callback) {
+    fetch(`/xkcd?id=${this.index}`)
+      .then(resp => resp.json())
+      .then((data) => {
+        callback(data);
+
+        this.pending = false;
+        this.index++;
+
+        if (this.callbackQueue.length) {
+          this.getData(this.callbackQueue[0]);
+          this.callbackQueue.shift();
+        }
+      })
   }
 
-  nextRunner(callback) {
-    return function () {
-      this.next(callback);
-    };
+  hasNext() {
+    return this.index < this.dataLength;
   }
 }
 
 const xkcdMeme = new XKCDMeme();
 
 xkcdMeme
-  .next(addMemeToDOM)
   .next(addMemeToDOM)
   .next(addMemeToDOM)
   .next(addMemeToDOM)
